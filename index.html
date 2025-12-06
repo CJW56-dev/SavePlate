@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SavePlate: Harvest Horizon</title>
@@ -9,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    
+
     <script>
         tailwind.config = {
             darkMode: ['class', '[data-theme="dark"]'],
@@ -53,18 +52,18 @@
         measurementId: "G-DVNZWKX02T"
       };
 
-      // Initialize
+      // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const analytics = getAnalytics(app);
       const db = getFirestore(app);
       const auth = getAuth(app);
 
-      // Expose to window so your existing app can use them
+      // Expose to window so your app logic can use it later
       window.firebaseDB = db;
       window.firebaseAuth = auth;
       window.firestoreOps = { collection, addDoc, getDocs, doc, setDoc };
       
-      console.log("🔥 Firebase Connected");
+      console.log("🔥 Firebase Linked Successfully!");
     </script>
 
     <style>
@@ -79,11 +78,9 @@
             --border-subtle: #334155;
             
             --shadow-natural: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-            --shadow-glass: 0 20px 40px -10px rgba(0, 0, 0, 0.6); /* Stronger shadow for dark mode depth */
+            --shadow-glass: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
             --header-glass: rgba(15, 23, 42, 0.8);
             --input-text: #FFFFFF;
-            
-            /* Overlay Opacity: 0.9 means 90% Blue Color, 10% Image Visible */
             --bg-overlay-opacity: 0.90; 
         }
 
@@ -97,24 +94,19 @@
             --border-subtle: #E2E8F0;
 
             --shadow-natural: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-glass: 0 20px 40px -10px rgba(0, 0, 0, 0.1); /* Soft shadow for light mode */
+            --shadow-glass: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
             --header-glass: rgba(255, 255, 255, 0.8);
             --input-text: #0F172A;
-            
-            /* Overlay Opacity: 0.4 means 40% White Color, 60% Image Visible */
             --bg-overlay-opacity: 0.40; 
         }
 
-        /* Essential for background to show through */
         body { background-color: transparent; color: var(--text-main); min-height: 100vh; overflow-x: hidden; position: relative; }
         
-        /* Smooth Transition */
         body, div, nav, button, input, select, h1, h2, h3, p, span, i, header, .overlay-layer { 
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease; 
         }
 
         .glass-header { background: var(--header-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-subtle); }
-        
         .natural-card { background-color: var(--bg-card); box-shadow: var(--shadow-natural); border: 1px solid var(--border-subtle); }
         
         .natural-input { 
@@ -166,7 +158,7 @@
             currentPage: 'listings', user: null, listings: [], reservations: [], chatMessages: [],
             isModalOpen: false, modalContent: '', currentChatId: null, currentChatName: null,
             aiAnalyzing: false, searchQuery: '', tempImage: null,
-            theme: 'dark' // Default to Dark Mode (Picture 2 style)
+            theme: 'dark' 
         };
 
         // --- Local Storage Helpers ---
@@ -598,7 +590,6 @@
             `;
         }
 
-        // IMPROVEMENT 3: MAP BUTTON ADDED
         function renderListingsPage() {
              const filtered = STATE.listings.filter(l => l.foodName.toLowerCase().includes(STATE.searchQuery) || l.location.toLowerCase().includes(STATE.searchQuery));
              return `
@@ -613,6 +604,9 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     ${filtered.length > 0 ? filtered.map(l => {
                         const prices = calculatePrice(l.originalPrice, l.discount);
+                        // FIXED: Google Maps Link using standard Query URL
+                        const mapLink = https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.location)};
+                        
                         return `
                         <div class="natural-card rounded-3xl overflow-hidden flex flex-col h-full food-card-hover group">
                             <div class="h-56 w-full overflow-hidden relative">
@@ -638,7 +632,7 @@
                                         </div>
                                     </div>
                                     <div class="flex gap-2">
-                                        <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.location)}" target="_blank" 
+                                        <a href="${mapLink}" target="_blank" 
                                            class="px-3 py-2.5 bg-card-bg border border-border-subtle text-text-muted rounded-xl hover:text-white hover:border-white/20 transition flex items-center justify-center">
                                            <i class="ph-bold ph-map-trifold text-xl"></i>
                                         </a>
@@ -714,10 +708,6 @@
                         const lastMsg = msgs.length > 0 ? msgs[msgs.length - 1] : { text: "No messages yet.", user: "System", timestamp: r.timestamp };
                         const isUnread = lastMsg.user !== STATE.user.username && lastMsg.role !== 'system';
                         
-                        // --- HOVER LOGIC ("Follow Pointer") ---
-                        // 'group' allows us to style children when the parent is hovered
-                        // 'hover:border-l-sky-500' creates the blue bar on hover
-                        // 'hover:-translate-y-1' makes it lift up
                         const hoverClasses = "hover:border-l-sky-500 hover:bg-sky-500/10 hover:shadow-lg hover:-translate-y-1";
                         const baseClasses = "natural-card p-5 rounded-2xl flex justify-between items-center cursor-pointer border-l-[6px] transition-all duration-300 ease-out group";
                         const activeClasses = isUnread ? "border-l-sky-500 bg-sky-500/5" : "border-l-transparent";
