@@ -37,10 +37,11 @@
     </script>
 
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
-      import { getFirestore, collection, addDoc, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-      import { getAuth } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+      // I changed 12.6.0 to 10.8.0 here so the links actually work!
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+      import { getFirestore, collection, addDoc, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyBBhIGuenJfzmvIJA0efkoJNG9Ufll6b98",
@@ -52,18 +53,19 @@
         measurementId: "G-DVNZWKX02T"
       };
 
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
-      const db = getFirestore(app);
-      const auth = getAuth(app);
+      try {
+          const app = initializeApp(firebaseConfig);
+          const analytics = getAnalytics(app);
+          const db = getFirestore(app);
+          const auth = getAuth(app);
 
-      // Expose to window so your app logic can use it later
-      window.firebaseDB = db;
-      window.firebaseAuth = auth;
-      window.firestoreOps = { collection, addDoc, getDocs, doc, setDoc };
-      
-      console.log("🔥 Firebase Linked Successfully!");
+          window.firebaseDB = db;
+          window.firebaseAuth = auth;
+          window.firestoreOps = { collection, addDoc, getDocs, doc, setDoc };
+          console.log("🔥 Firebase 10.8.0 Connected Successfully!");
+      } catch (e) {
+          console.error("Firebase Error:", e);
+      }
     </script>
 
     <style>
