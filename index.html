@@ -215,8 +215,8 @@
             const toast = document.createElement('div');
             const colorClass = type === 'success' ? 'border-l-harvest-green' : 'border-l-red-500';
             const icon = type === 'success' ? 'ph-check-circle' : 'ph-warning-circle';
-            toast.className = natural-card p-4 rounded-xl border-l-4 ${colorClass} shadow-glass flex items-center gap-3 min-w-[300px] toast-enter pointer-events-auto bg-card-bg;
-            toast.innerHTML = <i class="ph-fill ${icon} text-xl ${type === 'success' ? 'text-harvest-green' : 'text-red-500'}"></i><span class="text-sm font-semibold text-text-main">${message}</span>;
+            toast.className = `natural-card p-4 rounded-xl border-l-4 ${colorClass} shadow-glass flex items-center gap-3 min-w-[300px] toast-enter pointer-events-auto bg-card-bg`;
+            toast.innerHTML = `<i class="ph-fill ${icon} text-xl ${type === 'success' ? 'text-harvest-green' : 'text-red-500'}"></i><span class="text-sm font-semibold text-text-main">${message}</span>`;
             container.appendChild(toast);
             requestAnimationFrame(() => { toast.classList.remove('toast-enter'); toast.classList.add('toast-enter-active'); });
             setTimeout(() => { toast.classList.remove('toast-enter-active'); toast.classList.add('toast-exit-active'); setTimeout(() => toast.remove(), 300); }, 3000);
@@ -244,7 +244,7 @@
             let userRecord = users.find(u => u.username === username);
 
             if (userRecord && userRecord.role !== role) {
-                showMessage("Access Denied", Account '${username}' exists as a ${userRecord.role}., true);
+                showMessage("Access Denied", `Account '${username}' exists as a ${userRecord.role}.`, true);
                 return;
             } else if (!userRecord) {
                 const newUser = { id: idGen(), username, role, points: 0, sellerId: role === 'seller' ? 'seller_a' : undefined };
@@ -283,7 +283,7 @@
              const listing = STATE.listings.find(l => l.id === listingId);
              const prices = calculatePrice(listing.originalPrice, listing.discount);
              
-             if(!confirm(Pay RM ${prices.final}?)) return;
+             if(!confirm(`Pay RM ${prices.final}?`)) return;
 
              const transactionId = idGen();
              STATE.reservations.push({
@@ -301,10 +301,10 @@
 
              STATE.chatMessages.push({
                  id: idGen(), transactionId: transactionId, user: 'System', role: 'system',
-                 text: Transaction started. You earned ${pointsEarned} Eco-Credits! Discuss pickup here., timestamp: new Date().toISOString()
+                 text: `Transaction started. You earned ${pointsEarned} Eco-Credits! Discuss pickup here.`, timestamp: new Date().toISOString()
              });
              writeStorage('chatMessages', STATE.chatMessages);
-             showToast(Reserved! Earned ${pointsEarned} pts., 'success');
+             showToast(`Reserved! Earned ${pointsEarned} pts.`, 'success');
         }
 
         window.handleImageUpload = (input) => {
@@ -360,10 +360,10 @@
         
         window.redeemReward = (cost, name) => {
             if((STATE.user.points || 0) >= cost) {
-                if(!confirm(Spend ${cost} points on "${name}"?)) return;
+                if(!confirm(`Spend ${cost} points on "${name}"?`)) return;
                 STATE.user.points -= cost;
                 updateUserStorage();
-                showToast(Redeemed: ${name}, "success");
+                showToast(`Redeemed: ${name}`, "success");
             }
         }
 
@@ -388,8 +388,8 @@
                 let isUrgent = false;
 
                 if (riskyItems.length > 0) {
-                    reportTitle = "⚠ Risk Alert";
-                    reportMsg = <strong>${riskyItems.length} items</strong> are expiring soon (e.g., ${riskyItems[0].foodName}).<br>Recommended: Increase discount to 70%.;
+                    reportTitle = "⚠️ Risk Alert";
+                    reportMsg = `<strong>${riskyItems.length} items</strong> are expiring soon (e.g., ${riskyItems[0].foodName}).<br>Recommended: Increase discount to 70%.`;
                     isUrgent = true;
                 }
 
@@ -551,10 +551,10 @@
                     <div class="flex justify-between items-center max-w-7xl mx-auto py-3 px-6">
                         <div class="flex items-center gap-6">
                             <h1 class="text-2xl font-black tracking-tighter text-text-main cursor-pointer" onclick="handlePageChange('listings')">SavePlate<span class="text-harvest-green">.</span></h1>
-                            ${STATE.user.role === 'buyer' ? <div class="hidden md:flex items-center bg-harvest-green/10 px-4 py-1.5 rounded-full border border-harvest-green/20"><i class="ph-fill ph-leaf text-harvest-green mr-2"></i><span class="text-sm font-bold text-harvest-green">${STATE.user.points || 0} Credits</span></div> : ''}
+                            ${STATE.user.role === 'buyer' ? `<div class="hidden md:flex items-center bg-harvest-green/10 px-4 py-1.5 rounded-full border border-harvest-green/20"><i class="ph-fill ph-leaf text-harvest-green mr-2"></i><span class="text-sm font-bold text-harvest-green">${STATE.user.points || 0} Credits</span></div>` : ''}
                         </div>
                         <nav class="flex items-center gap-1">
-                            ${links.map(l => <button onclick="handlePageChange('${l.id}')" class="px-4 py-2 text-sm font-semibold rounded-lg flex items-center transition-all ${STATE.currentPage === l.id ? 'bg-text-main text-main-bg shadow-md' : 'text-text-muted hover:text-text-main hover:bg-card-bg'}"><i class="ph-bold ${l.icon} text-lg md:mr-2"></i> <span class="hidden md:inline">${l.label}</span></button>).join('')}
+                            ${links.map(l => `<button onclick="handlePageChange('${l.id}')" class="px-4 py-2 text-sm font-semibold rounded-lg flex items-center transition-all ${STATE.currentPage === l.id ? 'bg-text-main text-main-bg shadow-md' : 'text-text-muted hover:text-text-main hover:bg-card-bg'}"><i class="ph-bold ${l.icon} text-lg md:mr-2"></i> <span class="hidden md:inline">${l.label}</span></button>`).join('')}
                             <div class="w-px h-6 bg-border-subtle mx-2"></div>
                             <button onclick="toggleTheme()" class="p-2 rounded-full text-text-muted hover:text-text-main hover:bg-card-bg transition"><i class="ph-fill ${STATE.theme === 'dark' ? 'ph-sun' : 'ph-moon'} text-xl"></i></button>
                             <button onclick="logout()" class="ml-2 text-xs font-bold text-red-400 hover:text-red-500 transition px-2">Log Out</button>
@@ -584,7 +584,7 @@
                             <div class="h-56 w-full overflow-hidden relative">
                                 <img src="${l.image || 'https://via.placeholder.com/400x300'}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="${l.foodName}">
                                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
-                                ${l.tag ? <div class="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">${l.tag}</div> : ''}
+                                ${l.tag ? `<div class="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">${l.tag}</div>` : ''}
                                 <div class="absolute bottom-4 left-4 bg-white/20 backdrop-blur-md border border-white/30 px-3 py-1.5 rounded-lg text-xs text-white font-medium flex items-center">
                                     <i class="ph-fill ph-clock mr-1"></i> Exp: ${l.expiry}
                                 </div>
@@ -613,7 +613,7 @@
                                 </div>
                             </div>
                         </div>`
-                    }).join('') : <div class="col-span-3 text-center py-20"><div class="inline-flex p-6 rounded-full bg-card-bg mb-4 text-text-muted shadow-natural"><i class="ph-duotone ph-magnifying-glass text-4xl"></i></div><p class="text-text-muted text-lg">No delicious food found matching "${STATE.searchQuery}"</p></div>}
+                    }).join('') : `<div class="col-span-3 text-center py-20"><div class="inline-flex p-6 rounded-full bg-card-bg mb-4 text-text-muted shadow-natural"><i class="ph-duotone ph-magnifying-glass text-4xl"></i></div><p class="text-text-muted text-lg">No delicious food found matching "${STATE.searchQuery}"</p></div>`}
                  </div>
              </div>`;
         }
@@ -709,7 +709,7 @@
                                 ${isUnread ? '<span class="bg-sky-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide shadow-sm animate-pulse">New</span>' : ''}
                             </div>
                         </div>`;
-                    }).join('') : <div class="text-center p-16 natural-card rounded-3xl"><i class="ph-duotone ph-chats-circle text-6xl text-text-muted mb-4 opacity-50"></i><p class="text-text-muted">No active conversations found.</p></div>}
+                    }).join('') : `<div class="text-center p-16 natural-card rounded-3xl"><i class="ph-duotone ph-chats-circle text-6xl text-text-muted mb-4 opacity-50"></i><p class="text-text-muted">No active conversations found.</p></div>`}
                 </div>
             </div>`;
         }
@@ -725,8 +725,8 @@
                 <div id="chat-container" class="flex-grow p-6 overflow-y-auto bg-main-bg space-y-4">
                     ${msgs.map(m => {
                         const isMe = m.user === STATE.user.username; const isSystem = m.role === 'system';
-                        if (isSystem) return <div class="flex justify-center"><div class="text-xs font-bold text-text-muted bg-card-bg px-3 py-1 rounded-full border border-border-subtle shadow-sm">${m.text}</div></div>;
-                        return <div class="flex ${isMe ? 'justify-end' : 'justify-start'} chat-anim"><div class="max-w-[75%]"><div class="px-5 py-3 rounded-2xl text-sm shadow-sm ${isMe ? 'bg-sky-600 text-white rounded-tr-none' : 'bg-card-bg text-text-main border border-border-subtle rounded-tl-none'}">${m.text}</div><div class="text-[10px] text-text-muted mt-1 font-medium ${isMe ? 'text-right' : 'text-left'}">${new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div></div>;
+                        if (isSystem) return `<div class="flex justify-center"><div class="text-xs font-bold text-text-muted bg-card-bg px-3 py-1 rounded-full border border-border-subtle shadow-sm">${m.text}</div></div>`;
+                        return `<div class="flex ${isMe ? 'justify-end' : 'justify-start'} chat-anim"><div class="max-w-[75%]"><div class="px-5 py-3 rounded-2xl text-sm shadow-sm ${isMe ? 'bg-sky-600 text-white rounded-tr-none' : 'bg-card-bg text-text-main border border-border-subtle rounded-tl-none'}">${m.text}</div><div class="text-[10px] text-text-muted mt-1 font-medium ${isMe ? 'text-right' : 'text-left'}">${new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div></div></div>`;
                     }).join('')}
                 </div>
                 <div class="p-4 bg-card-bg border-t border-border-subtle flex items-center gap-3">
@@ -785,7 +785,7 @@
             if (STATE.currentPage === 'login') container.innerHTML = renderLogin();
             else container.innerHTML = renderHeader() + '<main>' + renderContent() + '</main>' + (STATE.isModalOpen ? renderModal() : '');
         }
-        function renderModal() { return <div class="fixed inset-0 modal-backdrop z-[60] flex items-center justify-center p-4"><div class="w-full max-w-md mx-auto chat-anim">${STATE.modalContent}</div></div>; }
+        function renderModal() { return `<div class="fixed inset-0 modal-backdrop z-[60] flex items-center justify-center p-4"><div class="w-full max-w-md mx-auto chat-anim">${STATE.modalContent}</div></div>`; }
 
         window.onload = checkSessionAndLoad;
     </script>
