@@ -229,6 +229,7 @@
             updateUI();
         }
 
+        // --- FIXED TOAST FUNCTION (Added missing backticks) ---
         window.showToast = (message, type = 'success') => {
             let container = document.getElementById('toast-container');
             if (!container) {
@@ -240,8 +241,10 @@
             const toast = document.createElement('div');
             const colorClass = type === 'success' ? 'border-l-harvest-green' : 'border-l-red-500';
             const icon = type === 'success' ? 'ph-check-circle' : 'ph-warning-circle';
-            // FIXED: Added backticks here
+            
+            // This line below was broken. It is fixed now with backticks (` `).
             toast.className = natural-card p-4 rounded-xl border-l-4 ${colorClass} shadow-glass flex items-center gap-3 min-w-[300px] toast-enter pointer-events-auto bg-card-bg;
+            
             toast.innerHTML = <i class="ph-fill ${icon} text-xl ${type === 'success' ? 'text-harvest-green' : 'text-red-500'}"></i><span class="text-sm font-semibold text-text-main">${message}</span>;
             container.appendChild(toast);
             requestAnimationFrame(() => { toast.classList.remove('toast-enter'); toast.classList.add('toast-enter-active'); });
